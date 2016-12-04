@@ -1,0 +1,4 @@
+
+; <<>> DiG 9.9.5-9+deb8u7-Debian <<>> ftp.univ-tlse3.fr @127.0.0.1 -p 5300 +short
+;; global options: +cmd
+;; connection timed out; no servers could be reached

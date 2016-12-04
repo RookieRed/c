@@ -1,0 +1,95 @@
+
+
+          =>  COMMENT VA FONCTIONNER NOTRE PROXY?
+
+ [o] Executé en arrrière plan en local (adresse 127.0.0.1 port 21)
+
+ [o] Commande client : "ftp> -adresse-"
+ [o] Création d'un socket client et serveur pour la communication avec le client
+ [o] Création du socket client pour la connexion avec le serveur FTP
+
+ [o] Envoie et reception des données de connexion (login - password) du client
+
+ [o] Début de la session FTP si mdp login exacts
+ [o] Transmisison des données puis attente des réponses du serveur
+ [o] Retransmission des données au client
+
+
+
+          => SCHÉMA DE LA SYNCHRONICITANCE (Larousse 2025) ENTRE PROXY CLIENT ET SERVEUR
+
+
+  ______________                 ____________________                 __________________
+ |    CLIENT    |               |    PROXY (nous)    |               |    SERVEUR FTP   |
+  --------------                 --------------------                --------------------
+        |                                  |                                   |
+        |                                [S*]                                  |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                 [A]                                  |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        | ------------------------------->[S*]                                 |
+        |      Connexion au proxy (ftp)    |                                   |
+        |                                  |                                   |          *  LÉGENDE : *******************************
+        |  <------------------------------ |                                   |          *                                          *
+        |         [?] login@server        [A]                                  |          * [!]  Traitement conditionnel             *
+        |                                  |                                   |          * [S*] Instanciation d'un socket serveur   *
+        | ------------------------------->[!]                                  |          * [C*] Instanciation d'un socket client    *
+        |            login@server          |                                   |          * [A]  Mise en attente pour la réponse     *
+        |                                [C*]--------------------------------> |          * [?]  Demande d'informations              *
+        |                                 [A]   demande connexion (+login)     |          * [X]  Mort des sockets et deconnexion     *
+        |                                  |                                   |          *                                          *
+        |                                 [!]<-------------------------------- |          ********************************************
+        | <------------------------------- |           retour connexion        |
+        |         [?] Mot de passe        [A]                                  |
+        |                                  |                                   |
+        | -------------------------------> |                                   |
+        |           Mot de passe           |  -------------------------------> |
+        |                                  |             Mot de passe          |
+        |                                  |                                   |
+        |                                  | <-------------------------------  |
+        | <------------------------------- |          Retour connexion         |
+        |        Retour connexion          |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                      [DEBUT DE LA COMMUNICTAION]                     |
+        | -------------------------------> |                                   |
+        |           REQUETE                |  -------------------------------> |
+        |                                  |              REQUETE              |
+        |                                  |                                   |
+        |                                  | <-------------------------------  |
+        | <------------------------------- |              REPONSE              |
+        |            REPONSE               |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                       [FIN DE LA COMMUNICTAION]                      |
+        |                                  |                                   |
+        | -------------------------------> |                                   |
+        |               Exit               |  -------------------------------> |
+        |                                  |                Exit               |
+        |                                  |                                   |
+        |                                  |  <------------------------------- |
+        |                                 [X]                OK                |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+        |                                  |                                   |
+
+
+
+ 
+
+         => ARBORESCENCE DE NOTRE PROJET:
+
+	headers
+		->types.h
+	src
+
+	main.c

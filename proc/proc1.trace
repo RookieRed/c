@@ -1,0 +1,14 @@
+	 -> Programme proc1
+ [P] PID		  = 3249
+ [P] IUD		  = 1000
+ [P] Username		  = rookiered
+ [P] Heure & date système = Sat Nov 28 20:48:33 2015
+ [P] PID Fils 1		  = 3250
+fin
+	 -> Programme proc1
+ [P] PID		  = 3249
+ [P] IUD		  = 1000
+ [P] Username		  = rookiered
+ [P] Heure & date système = Sat Nov 28 20:48:33 2015
+	==> Processus fils 1
+  [f1] PID fils = 3250
