@@ -71,7 +71,7 @@ void communicationServeurUDP(Socket sockCom, const char * fichierConf, char * do
 		adresseIP[IP_LEN];                  //
 	int buff_len = 0, reponse_len;          //
 	struct sockaddr_in client = {0};		//
-	socklen_t client_len; 					//
+	socklen_t client_len = sizeof(client);	//
 											//
 //============================================
 
@@ -91,26 +91,41 @@ void communicationServeurUDP(Socket sockCom, const char * fichierConf, char * do
 	//Vérification du domaine
 	index = strstr(qname, domaine);
 	if(index != NULL) {
+
 		//Serveur racine ou TLD
 		if((typeServ == ROOT) || (typeServ == TLD)){
-
-			//Récpération du TLD
-			int i, tld_len = 0,
-				qname_len = strlen(qname);
-			char tld[qname_len], tldMiroir[qname_len];
-			//Parcours inverse du qname jusqu'au premier point
-			do {
-				tldMiroir[tld_len] = qname[qname_len-tld_len-1];
-				tld_len++;
-			} while(qname[qname_len-tld_len-1] != '.');
-			//Récupération du tld grace au miroir
-			for (i = 0; i < tld_len; ++i) {
-				tld[i] = tldMiroir[tld_len-i];
+			char *tabQname[10];
+			int nbTokens = 0;
+			
+			//On parse le qname dans un tableau
+			tabQname[nbTokens] = strtok(qname, ".");
+			while(tabQname[nbTokens] != NULL) {
+				nbTokens++;
+				tabQname[nbTokens] = strtok(NULL, ".");
 			}
-			printf("%s - %d - %d\n", tld, tld_len, strlen(tld));
-			//Si serveur TLD, récupération du reste de la question
-			if(typeServ == TLD){
 
+			//On récupère l'objet de la recherche...
+			char recherche[MAX_BUFF_LEN];
+			if(typeServ == ROOT){ // ...le tld pour le serveur de type ROOT suivi d'un point ...
+				sprintf(recherche, "%s.", tabQname[nbTokens-1]);
+			}
+			else { // ... le nom de domaine + le TLD pour le serveur TLD
+				sprintf(recherche, "%s.%s.", tabQname[nbTokens-2], tabQname[nbTokens-1]);
+			}
+
+			char nomDomaine[MAX_BUFF_LEN];
+			//Récupération du nom de domaine du serveur TLD
+			if(get_rr_data_from_name(fichierConf, recherche, nomDomaine)){
+
+				//Récupération de l'adresse ip correspondant au nom de domaine	
+				if(get_rr_data_from_name(fichierConf, nomDomaine, adresseIP)){
+					char unsigned ip[4];
+					sscanf(adresseIP, "%d.%d.%d.%d", ip, ip+1, ip+2, ip+3);
+
+					//Construction de la réponse DNS
+					reponse_len = build_dns_additional(buffer, recherche, nomDomaine, ip);
+					err = false;
+				}
 			}
 		}
 

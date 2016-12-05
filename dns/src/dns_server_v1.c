@@ -27,8 +27,8 @@ int main(int argc, char const *argv[]) {
 	
 	//On détermine le type de serveur : ROOT AUTHORITATIVE TLD
 	if((typeServeur = read_server_type_from_conf(fichierConf, domaine)) != 0){
-		printf(" (i) Nom de domaine : %s %d \n", domaine, typeServeur);
-		while(1)
+		// printf(" (i) Nom de domaine : %s %d \n", domaine, typeServeur);
+		while(true)
 			communicationServeurUDP(sockCom, fichierConf, domaine, typeServeur);
 	}
 	else {
