@@ -3,6 +3,7 @@
 # include <sys/time.h>
 # include <omp.h>
 
+#define NBTHREAD 4
 #define INF (1<<30) // a very large positive integer
 
 struct direct_edge_struct;
@@ -38,22 +39,27 @@ double get_time(){
 /******************************************************************************/
 int main ( int argc, char **argv ){
 
-  double comp_time;
+  double comp_time, t1, tmpsSeq;
 
   if (argc < 2){
     fprintf(stderr,"Usage: dijkstra <graph file name>\n");
     exit(-1);
   }
-  else
+  else {
+    t1 = get_time();
     read_graph(argv[1]);
+    tmpsSeq = get_time() - t1;
+  }
 
   comp_time = dijkstra();
 
-  printf("\nMinimal distance from node 0 to every other node:\n");
-  for (int i = 1; i < num_nodes; i++)
-      printf("Node %d: \t%d\n", i, min_distance[i]);
+  // printf("\nMinimal distance from node 0 to every other node:\n");
+  for (int i = 1; i < num_nodes; i++){
+      //printf("Node %d: \t%d\n", i, min_distance[i]);
+  }
 
   fprintf(stderr,"Computation time: %f\n", comp_time);
+  printf("Temps de lecture / construction graphe : %f, pourcentage : %f\n", tmpsSeq, (tmpsSeq)/(tmpsSeq+comp_time)*1e2);
 
   free(nodes);
   free(edges);
@@ -92,20 +98,23 @@ double dijkstra(){
   start = get_time();
   tree[0] = 1;
 
-  #pragma omp parallel for
+  //Instanciation des tableaux du programme
+  #pragma omp parallel for num_threads(NBTHREAD)
   for (int i = 1; i < num_nodes; i++)
     tree[i] = 0;
 
-  //#pragma omp parallel for
+  #pragma omp parallel for num_threads(NBTHREAD)
   for (int i = 0; i < num_nodes; i++)
     min_distance[i] = get_distance(0,i);
 
+
+  
   for (int step = 1; step < num_nodes; step++ ){
     // find the nearest node
     shortest_dist = INF;
     nearest_node = -1;
-
-    #pragma omp parallel for shared(shortest_dist, nearest_node)
+    
+    #pragma omp parallel for num_threads(NBTHREAD)
     for (int i = 0; i < num_nodes; i++){
       if ( !tree[i] && min_distance[i] < shortest_dist ){
         #pragma omp critical
@@ -123,7 +132,7 @@ double dijkstra(){
 
     tree[nearest_node] = 1;
     int d;
-    #pragma omp parallel for private(d)
+    #pragma omp parallel for num_threads(NBTHREAD) private(d)
     for (int i = 0; i < num_nodes; i++)
       if ( !tree[i] ){
         d = get_distance(nearest_node,i);
