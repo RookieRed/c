@@ -1,4 +1,5 @@
 #     -= Varialbes globales =-
+# A PARALLELISER : CHAQUE INSTANCIATION DES TABLEAUX
 #Tableau contenant l'ensemble des arcs (récupéré depuis le fichier)
 tableauArcs[nb_arcs]
 #Tableau contenant les distances minimales entre l'origine 0 et tous les noeuds
@@ -8,7 +9,7 @@ estDansArbre[nb_noeuds] = faux
 
 #      -= Début de l'algo =-
 #1 - Instancier le tableau des distances minimales avec l'origine
-# A PARALELISER, PAS DE VARIABLE RPIVÉ
+# A PARALELISER, PAS DE VARIABLES RPIVÉES
 pour (i=0) < nb_noeuds :
 	si existeChemin(0, i):
 		distancesMinimales[i] = poidsChemin(0, i)
@@ -21,17 +22,20 @@ pour (i=1) < nb_noeuds:
 	tmpDistMin = INF
 	voisinPlusProche = -1
 
-	# A PARALELLISER
+	# A PARALELLISER, PAS DE VARIABLES PRIVÉES
 	pour (j=0) < nb_noeuds:
 		si !estDansArbre[j] ET distancesMinimales[j] < tmpDistMin:
 			#On actualise le noeud le plus proche 
-			# ZONE CRITIQUE
+			# ZONE CRITIQUE {
 			tmpDistMin = distancesMinimales[j]
 			voisinPlusProche = j
+			# }
 	estDansArbre[voisinPlusProche] = vrai
-			
+	
+	# BARRIERE DE PARALLELISATION
+
 	#3 - Actualisation des distances origine - noeuds suite à l'ajout du voisin le + proche
-	# A PARALELLISER, PAS DE VARIABLE PRIVÉ
+	# A PARALELLISER, VARIABLE PRIVÉE : nouvelleDist
 	pour (j=0) < nb_noeuds:
 		si existeChemin(voisinPlusProche, j):
 			#On teste si le nouveau chemin en passant par le voisin le + proche est plus court que celui enregistré
@@ -39,4 +43,4 @@ pour (i=1) < nb_noeuds:
 			si nouvelleDist < distancesMinimales[j]:
 				distancesMinimales[j] = nouvelleDist
 
-#        -= Fin de l'algo =-
+#	-= Fin de l'algo =-

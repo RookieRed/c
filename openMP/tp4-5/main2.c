@@ -3,8 +3,7 @@
 # include <sys/time.h>
 # include <omp.h>
 
-#define NBTHREAD 4
-
+#define NBTHREAD 1
 #define INF (1<<30) // a very large positive integer
 
 struct direct_edge_struct;
@@ -25,8 +24,6 @@ int edge_counter = 0;
 struct direct_edge_struct **nodes;
 int *min_distance;
 char *tree;
-
-double lectureDist = 0;
 
 int main ( int argc, char **argv );
 void read_graph(char *filename);
@@ -49,34 +46,20 @@ int main ( int argc, char **argv ){
     exit(-1);
   }
   else {
-<<<<<<< HEAD
     t1 = get_time();
     read_graph(argv[1]);
     tmpsSeq = get_time() - t1;
-=======
-    double t1 = get_time();
-    read_graph(argv[1]);
-    printf("Temps lecture / construction = %f\n", get_time() - t1);
->>>>>>> 0c2e03ee397db9df11dd1c94b84fa3b02970b71c
   }
 
   comp_time = dijkstra();
 
-<<<<<<< HEAD
   // printf("\nMinimal distance from node 0 to every other node:\n");
-=======
-  printf("\nMinimal distance from node 0 to every other node:\n");
->>>>>>> 0c2e03ee397db9df11dd1c94b84fa3b02970b71c
   for (int i = 1; i < num_nodes; i++){
       //printf("Node %d: \t%d\n", i, min_distance[i]);
   }
 
-<<<<<<< HEAD
   fprintf(stderr,"Computation time: %f\n", comp_time);
   printf("Temps de lecture / construction graphe : %f, pourcentage : %f\n", tmpsSeq, (tmpsSeq)/(tmpsSeq+comp_time)*1e2);
-=======
-   fprintf(stderr,"Computation time: %f\n", comp_time);
->>>>>>> 0c2e03ee397db9df11dd1c94b84fa3b02970b71c
 
   free(nodes);
   free(edges);
@@ -92,7 +75,6 @@ int get_distance(int node1, int node2){
   //   0 if node1==node2
   //   weight of edge if any between node1 and node2
   //   INF otherwise
-  double t1 = get_time();
   if (node1 == node2)
     return 0;
   struct direct_edge_struct *edge = nodes[node1];
@@ -101,7 +83,6 @@ int get_distance(int node1, int node2){
       return edge->weight;
     edge = edge->next;
   }
-  lectureDist += (get_time() - t1);
   // node2 has not been found as a direct neighbour of node 1
   return INF;
 }

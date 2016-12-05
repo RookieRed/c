@@ -74,7 +74,7 @@ int main(int argc, char const *argv[]) {
 		perror("Erreur recvfrom");
 		exit(6);
 	}
-	// dump_hex(buffer, buff_len);
+	
 	printf(" (i) Réponse reçue : ");
 	//Test si erreur name
 	if(buffer[3] & 3){
