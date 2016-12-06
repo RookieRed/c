@@ -70,4 +70,10 @@ void initialiserSocketUDP(const int, const char *, Socket *, type_sock, struct s
 */
 void communicationServeurUDP(Socket, const char *, char *, int);
 
+/**
+* 
+*/
+bool comminucationServeurLocal(Socket sockCom, char* , int*, const char*, const int, int);
+
+
 #endif

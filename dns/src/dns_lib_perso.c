@@ -158,6 +158,12 @@ void communicationServeurUDP(Socket sockCom, const char * fichierConf, char * do
 	sendto(sockCom, buffer, reponse_len, 0, (struct sockaddr *) &client, client_len);
 }
 
+
+bool comminucationServeurLocal(Socket sockCom, char * buffer, int buff_len,
+	const char* adresseServeur, const int portServeur, int typeServ){
+	
+}
+
 void interceptionSIGINT(int sig){
 	printf("\n (i) Bye bye !\n");
 	exit(0);

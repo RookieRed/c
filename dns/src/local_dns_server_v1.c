@@ -1,5 +1,8 @@
 #include "headers/includes.h"
 
+#define ADDR_ROOT "127.0.0.1"
+#define PORT_ROOT 1234
+
 
 int main(int argc, char const *argv[]) {
 
@@ -31,7 +34,12 @@ int main(int argc, char const *argv[]) {
 		}
 		//On parse la requete pour en récupérer la question
 		qname_from_question(buffer, buff_len, qname);
-		//Intérogation récursive des serveurs
+
+		//Intérogation du serveur racine
+
+		//Intérogation du serveur TLD récupéré
+
+		//Intérogation du serveur d'authorité (si besoin)
 	}
 
 

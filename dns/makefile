@@ -7,7 +7,10 @@ MAIN=gcc -o
 PRECMP=gcc -c -o
 FLAG= -std=c99
 
-all: dns_client dns_server_v0 dns_server_v1
+all: dns_client dns_server_v0 dns_server_v1, local_dns_server_v1
+
+local_dns_server_v1:src/local_dns_server_v1.c dns_lib_perso.o dns_packet_parsing.o dns_server_rr_files.o
+	$(MAIN) $@ $(SRC)/local_dns_server_v1.c $(O)/dns_lib_perso.o $(O)/dns_packet_parsing.o $(O)/dns_server_rr_files.o
 
 dns_server_v1: src/dns_server_v1.c dns_lib_perso.o dns_packet_parsing.o dns_server_rr_files.o
 	$(MAIN) $@ $(SRC)/dns_server_v1.c $(O)/dns_lib_perso.o $(O)/dns_packet_parsing.o $(O)/dns_server_rr_files.o
